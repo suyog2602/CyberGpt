@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "171913985930",
+    "project_id": "cybergpt-a88c1",
+    "storage_bucket": "cybergpt-a88c1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171913985930:android:51de49bcafe61715ba1273",
+        "android_client_info": {
+          "package_name": "com.example.cybergpt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171913985930-nnoif5ngi8sbu7u7ksp3vdl0v2b5kcsk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cybergpt",
+            "certificate_hash": "01dee3cf03ad7207fd250c2077fd540552c253c2"
+          }
+        },
+        {
+          "client_id": "171913985930-j354h6kdc4ep4u42e5f8hekupclgo20h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD8QDCkx4LZ9mBbkTFWQlkuItWUNEosZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171913985930-j354h6kdc4ep4u42e5f8hekupclgo20h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
