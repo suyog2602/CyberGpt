@@ -45,7 +45,7 @@ public class login_screen extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Google login button
-        login_google = findViewById(R.id.google_login_container);
+        login_google = findViewById(R.id.login_google_text);
         login_google.setOnClickListener(v -> signIn());
     }
 
@@ -80,7 +80,7 @@ public class login_screen extends AppCompatActivity {
                         Toast.makeText(this, "Welcome " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                         // Move to main activity after success
-                        startActivity(new Intent(this, MainActivity.class));
+                        startActivity(new Intent(this, homepage.class));
                         finish();
                     } else {
                         Toast.makeText(this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
@@ -94,7 +94,7 @@ public class login_screen extends AppCompatActivity {
         // Check if user already logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, homepage.class));
             finish();
         }
     }

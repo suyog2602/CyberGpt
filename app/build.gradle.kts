@@ -50,5 +50,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.4")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation ("org.json:json:20230227")
 
 }

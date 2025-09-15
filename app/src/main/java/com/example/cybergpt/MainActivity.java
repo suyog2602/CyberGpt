@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         hide_ime_id=findViewById(R.id.hide_ime_id);
 
         hide_ime_id.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, homepage.class);
+            Intent intent = new Intent(MainActivity.this, login_screen.class);
             startActivity(intent);
         });
 
