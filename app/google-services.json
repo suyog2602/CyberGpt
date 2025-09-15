@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1012502253624",
+    "project_id": "careerai-a7843",
+    "storage_bucket": "careerai-a7843.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012502253624:android:7d97ebc1921c449e3256cd",
+        "android_client_info": {
+          "package_name": "com.example.cybergpt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5-6Sp4NoZlA0dWFmpzHb0A7IRgJ9QvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
