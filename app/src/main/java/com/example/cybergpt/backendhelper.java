@@ -17,7 +17,7 @@ public class backendhelper {
 
     // Analyze answers method
     public void analyzeAnswers(JSONObject answers, Callback callback) {
-        String prompt = "Suggest 3 career options based on these answers: " + answers.toString();
+        String prompt = "Suggest 5 career options based on these answers: " + answers.toString();
 
         JSONObject jsonBody = new JSONObject();
         try {

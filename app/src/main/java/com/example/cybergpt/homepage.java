@@ -1,30 +1,30 @@
 package com.example.cybergpt;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-
 
 public class homepage extends AppCompatActivity {
 
-    private TextView chatView, questionView;
     private EditText inputField;
     private Button sendButton;
+    private RecyclerView recyclerView;
+    private ChatAdapter chatAdapter;
+    private List<Chatmessagemodel> chatMessages;
 
     private backendhelper backend;
 
@@ -43,33 +43,34 @@ public class homepage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        chatView = findViewById(R.id.chatView);
-        questionView = findViewById(R.id.questionView);
         inputField = findViewById(R.id.inputField);
         sendButton = findViewById(R.id.sendButton);
+        recyclerView = findViewById(R.id.recyclerViewChat);
 
         backend = new backendhelper();
 
-        // Start asking first question
+        // Setup RecyclerView
+        chatMessages = new ArrayList<>();
+        chatAdapter = new ChatAdapter(chatMessages);
+        recyclerView.setAdapter(chatAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Start with first question
         askNextQuestion();
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String answer = inputField.getText().toString().trim();
-                if (!answer.isEmpty()) {
-                    handleAnswer(answer);
-                    inputField.setText("");
-                }
+        sendButton.setOnClickListener(v -> {
+            String answer = inputField.getText().toString().trim();
+            if (!answer.isEmpty()) {
+                handleAnswer(answer);
+                inputField.setText("");
             }
         });
     }
 
     private void askNextQuestion() {
         if (currentQuestionIndex < questions.length) {
-            questionView.setText(questions[currentQuestionIndex]);
+            addMessage(questions[currentQuestionIndex], false); // Bot message
         } else {
-            // All answers collected → analyze
             analyzeAnswers();
         }
     }
@@ -81,19 +82,20 @@ public class homepage extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        chatView.append("\nYou: " + answer);
+        // User’s answer
+        addMessage(answer, true);
 
         currentQuestionIndex++;
         askNextQuestion();
     }
 
     private void analyzeAnswers() {
-        chatView.append("\n\nAnalyzing your answers...");
+        addMessage("Analyzing your answers...", false);
 
         backend.analyzeAnswers(answers, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> chatView.append("\nError: " + e.getMessage()));
+                runOnUiThread(() -> addMessage("Error: " + e.getMessage(), false));
             }
 
             @Override
@@ -101,31 +103,33 @@ public class homepage extends AppCompatActivity {
                 final String resp = response.body().string();
 
                 runOnUiThread(() -> {
-                    chatView.append("\n\nCareer Options:\n" + resp);
-
-                    // For now, show raw AI response
-                    // Next step → parse JSON & show clickable options
+                    addMessage("Career Options:\n" + resp, false);
+                    // Later: parse JSON → clickable career options
                 });
             }
         });
     }
 
-    // Example: user selects a career manually (in hackathon you can add a button for each)
     private void generateRoadmap(String career) {
         backend.generateRoadmap(career, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> chatView.append("\nError: " + e.getMessage()));
+                runOnUiThread(() -> addMessage("Error: " + e.getMessage(), false));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String resp = response.body().string();
 
-                runOnUiThread(() -> {
-                    chatView.append("\n\nRoadmap for " + career + ":\n" + resp);
-                });
+                runOnUiThread(() -> addMessage("Roadmap for " + career + ":\n" + resp, false));
             }
         });
+    }
+
+    // Add chat message to RecyclerView
+    private void addMessage(String text, boolean isUser) {
+        chatMessages.add(new Chatmessagemodel(text, isUser));
+        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+        recyclerView.scrollToPosition(chatMessages.size() - 1);
     }
 }
