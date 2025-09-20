@@ -3,17 +3,24 @@ package com.example.cybergpt;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class backendhelper {
-    private static final String API_KEY = "YOUR_API_KEY";
-    private OkHttpClient client = new OkHttpClient();
+    private static final String API_KEY = "AIzaSyAYtA8a744XIdMa1NDWPVSd4JUngJy_JpE";
+
+    // Configure client with longer timeouts
+    private OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)   // connection timeout
+            .readTimeout(60, TimeUnit.SECONDS)      // server response timeout
+            .writeTimeout(30, TimeUnit.SECONDS)     // request body write timeout
+            .build();
 
     // Analyze answers method
     public void analyzeAnswers(JSONObject answers, Callback callback) {
@@ -35,8 +42,10 @@ public class backendhelper {
                 MediaType.parse("application/json")
         );
 
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
+
         Request request = new Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY)
+                .url(url)
                 .post(body)
                 .build();
 
@@ -63,8 +72,10 @@ public class backendhelper {
                 MediaType.parse("application/json")
         );
 
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
+
         Request request = new Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY)
+                .url(url)
                 .post(body)
                 .build();
 

@@ -2,4 +2,7 @@
     <string name="app_name">CyberGPT</string>
     <string name="Web_client_id">171913985930-u0vig1pgkup5rgdcli18qlrs0vpit0iv.apps.googleusercontent.com</string>
     <string name="default_web_client_id" />
+    <string name="feedback">Chat History</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="log_out">Log Out</string>
 </resources>

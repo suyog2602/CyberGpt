@@ -1,13 +1,20 @@
 package com.example.cybergpt;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -22,9 +29,13 @@ public class homepage extends AppCompatActivity {
 
     private EditText inputField;
     private Button sendButton;
+    private ImageView imageMenu;
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
     private List<Chatmessagemodel> chatMessages;
+
+    DrawerLayout drawerlayout;
+    NavigationView navigate;
 
     private backendhelper backend;
 
@@ -38,6 +49,7 @@ public class homepage extends AppCompatActivity {
             "Would you like to study for many years (doctor, engineer) or prefer shorter training (designer, developer)?"
     };
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +58,9 @@ public class homepage extends AppCompatActivity {
         inputField = findViewById(R.id.inputField);
         sendButton = findViewById(R.id.sendButton);
         recyclerView = findViewById(R.id.recyclerViewChat);
-
+        imageMenu = findViewById(R.id.imageMenu);
+        drawerlayout = findViewById(R.id.drawerlayout);
+        navigate = findViewById(R.id.navigate);
         backend = new backendhelper();
 
         // Setup RecyclerView
@@ -63,6 +77,18 @@ public class homepage extends AppCompatActivity {
             if (!answer.isEmpty()) {
                 handleAnswer(answer);
                 inputField.setText("");
+            }
+        });
+
+        imageMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Toggle navigation drawer
+                if (drawerlayout.isDrawerOpen(navigate)) {
+                    drawerlayout.closeDrawer(navigate);
+                } else {
+                    drawerlayout.openDrawer(navigate);
+                }
             }
         });
     }
@@ -100,12 +126,33 @@ public class homepage extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final String resp = response.body().string();
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
 
-                runOnUiThread(() -> {
-                    addMessage("Career Options:\n" + resp, false);
-                    // Later: parse JSON → clickable career options
-                });
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONArray candidates = jsonObject.getJSONArray("candidates");
+
+                        if (candidates.length() > 0) {
+                            JSONObject firstCandidate = candidates.getJSONObject(0);
+                            JSONObject content = firstCandidate.getJSONObject("content");
+                            JSONArray parts = content.getJSONArray("parts");
+
+                            if (parts.length() > 0) {
+                                String text = parts.getJSONObject(0).getString("text");
+
+                                runOnUiThread(() -> {
+                                    addMessage("Career Options:\n" + text, false);
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> addMessage("Error parsing response", false));
+                    }
+                } else {
+                    runOnUiThread(() -> addMessage("Error: " + response.code(), false));
+                }
             }
         });
     }
@@ -119,9 +166,33 @@ public class homepage extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final String resp = response.body().string();
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
 
-                runOnUiThread(() -> addMessage("Roadmap for " + career + ":\n" + resp, false));
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONArray candidates = jsonObject.getJSONArray("candidates");
+
+                        if (candidates.length() > 0) {
+                            JSONObject firstCandidate = candidates.getJSONObject(0);
+                            JSONObject content = firstCandidate.getJSONObject("content");
+                            JSONArray parts = content.getJSONArray("parts");
+
+                            if (parts.length() > 0) {
+                                String text = parts.getJSONObject(0).getString("text");
+
+                                runOnUiThread(() -> {
+                                    addMessage("Roadmap for " + career + ":\n" + text, false);
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> addMessage("Error parsing roadmap", false));
+                    }
+                } else {
+                    runOnUiThread(() -> addMessage("Error: " + response.code(), false));
+                }
             }
         });
     }
